@@ -1,8 +1,8 @@
 package TalonarioConsola.services;
 
 import java.util.List;
-
 import TalonarioConsola.model.Talonario;
+
 
 public interface ITalonarioservice {
 

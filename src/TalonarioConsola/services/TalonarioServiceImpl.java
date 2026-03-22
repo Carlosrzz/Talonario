@@ -1,28 +1,23 @@
 package TalonarioConsola.services;
 
 
-import java.util.LinkedList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
-
+import TalonarioConsola.Conexion2.ConexionMySQL;
 import TalonarioConsola.model.Talonario;
 
 public class TalonarioServiceImpl implements ITalonarioservice {
 
 	
 	
-	List <Talonario> talonarios = null;
-	
-	
-	
-	
-	public TalonarioServiceImpl() {
-		
-		talonarios = new LinkedList<>();
+
 		
 		
 		
-	}
+	
 		
 		
 		
@@ -30,16 +25,36 @@ public class TalonarioServiceImpl implements ITalonarioservice {
 
 	@Override
 	public boolean guardar(Talonario talonario) {
-	
-		talonarios . add (talonario);
-		
-		return false;
+	    ConexionMySQL conexion = new ConexionMySQL();
+	    try {
+	    Connection con = conexion.getConexion();
+	    
+	    // No incluimos el ID porque en MySQL es Auto_Increment
+	    String sql = "INSERT INTO talonario (carnet, descripcion, fecha, estado) VALUES (?, ?, ?, ?)";
+	    
+	    try (PreparedStatement ps = con.prepareStatement(sql)) {
+	        ps.setString(1, talonario.getCarnet());
+	        ps.setString(2, talonario.getDescripcion());
+	        ps.setString(3, talonario.getFecha());
+	        ps.setString(4, talonario.getEstado());
+	        
+	        ps.executeUpdate();
+	        System.out.println("✅ ¡Datos enviados a MySQL con éxito!");
+	        return true;
+	    }
+	    } catch (SQLException e) {
+	        System.out.println("❌ Error al guardar: " + e.getMessage());
+	        return false;
+	    } finally {
+	        conexion.close();
+	    }
 	}
 
 	@Override
 	public Talonario recuperar(Talonario talonario) {
-		// TODO Auto-generated method stub
-		return talonarios.get(0);
+		Talonario tal = new Talonario();
+		
+		return tal;
 	}
 
 	@Override
@@ -60,7 +75,9 @@ public class TalonarioServiceImpl implements ITalonarioservice {
 
 	@Override
 	public List<Talonario> recuperarTalonarios() {
-		// TODO Auto-generated method stub
+		
+		List<Talonario> talonarios = null;
+		
 		return talonarios;
 	}
 
